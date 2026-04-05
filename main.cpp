@@ -2,48 +2,184 @@
 #include <vector>
 #include <string>
 
-class BankAccount
+class Account
 {
+private:
+    std::string _name;
+    long _balance;
+    long _accountNumber = 0;
+    static long _lastAccountNumber;
+
+public:
+    Account(std::string name, long initialBalance) : _name{name}, _balance{initialBalance}
+    {
+        _accountNumber++;
+        _lastAccountNumber = _accountNumber;
+    }
+
+    long getAccountNumber()
+    {
+        return _accountNumber;
+    }
+
+    long getBalance()
+    {
+        return _balance;
+    }
+
+    std::string getName()
+    {
+        return _name;
+    }
+
+    void setBalance(long balance)
+    {
+        _balance = balance;
+    }
 };
+
+long Account::_lastAccountNumber = 0;
+
+class Bank
+{
+private:
+    std::vector<Account *> accounts;
+
+public:
+    void openAccount(const std::string &, long);
+    bool isValidAccountNumber(int);
+    void checkBalance(long accountNumber);
+    void depositMoney(int, long);
+    void withDraw();
+    void showAllAccounts();
+    void closeAccount();
+};
+
+void Bank::showAllAccounts()
+{
+    for (const auto account : accounts)
+    {
+        std::cout << "Account Holder:" << account->getName() << std::endl;
+        std::cout << "Balance:" << account->getBalance() << std::endl;
+        std::cout << "Account Number:" << account->getAccountNumber() << std::endl;
+    }
+}
+
+bool Bank::isValidAccountNumber(int accountNumber)
+{
+    for (const auto account : accounts)
+    {
+        if (account->getAccountNumber() == accountNumber)
+            return true;
+    }
+    return false;
+}
+
+void Bank::depositMoney(int accountNumber, long amount)
+{
+    for (const auto account : accounts)
+    {
+        if (account->getAccountNumber() == accountNumber)
+        {
+            account->setBalance(account->getBalance() + amount);
+            std::cout << "\nBalance Updated\n"
+                      << std::endl;
+        }
+    }
+}
+
+void Bank::checkBalance(long acccountNumber)
+{
+    for (const auto account : accounts)
+    {
+        if (account->getAccountNumber() == acccountNumber)
+        {
+            std::cout << account->getBalance() << std::endl;
+            return;
+        }
+    }
+    std::cout << "\nNo account found\n"
+              << std::endl;
+}
+
+void Bank::openAccount(const std::string &name, long balance)
+{
+    accounts.push_back(new Account(name, balance));
+}
 
 int main()
 {
 
-    std::vector<BankAccount> accounts;
-    // Step 2: Display Menu Options
-    std::cout << "<======= Banking System ==========>" << std::endl;
-    std::cout << "1. Create Account" << std::endl;
-    std::cout << "2. Deposit Money" << std::endl;
-    std::cout << "3. Withdraw Money" << std::endl;
-    std::cout << "4. Display Account details" << std::endl;
-    std::cout << "5. Exit" << std::endl;
+    Bank b;
 
-    // Step 3: Take User Input for Choice
     int userInput;
-    std::cout << "Enter Input:";
-    std::cin >> userInput;
 
-    // Step 4: Perform Actions Based on Choice
-    switch (userInput)
+    do
     {
-    case 1:
-        std::cout << "Creating Account ........." << std::endl;
-        std::cout << "Enter Account Holder Name:";
-        std::string name;
-        std::cin.ignore();
-        std::getline(std::cin, name);
-        std::cout << "Entered Account Holder Name:" << name << std::endl;
-        break;
-        // case 2:
-        //     break;
-        // case 3:
-        //     break;
-        // case 4:
-        //     break;
-        // case 5:
-        //     break;
-        // default:
-    }
+        std::cout << "<======= Banking System ==========>" << std::endl;
+        std::cout << "1. Open an  Account" << std::endl;
+        std::cout << "2. Check Balance" << std::endl;
+        std::cout << "3. Deposit Money" << std::endl;
+        std::cout << "4. Withdraw Money" << std::endl;
+        std::cout << "5. Close an Account" << std::endl;
+        std::cout << "6. Display All Account details" << std::endl;
+        std::cout << "7. Exit" << std::endl;
+
+        std::cout << "Enter Input:";
+        std::cin >> userInput;
+
+        switch (userInput)
+        {
+        case 1:
+        {
+            std::cout << "Creating Account ........." << std::endl;
+            std::cout << "Enter Account Holder Name:";
+            std::string name;
+            std::cin.ignore();
+            std::getline(std::cin, name);
+            std::cout << "Entered Account Holder Name:" << name << std::endl;
+            std::cout << "Enter initial balance:";
+            long initialBalance;
+            std::cin >> initialBalance;
+            b.openAccount(name, initialBalance);
+            break;
+        }
+        case 2:
+        {
+            std::cout << "Enter Account Number:";
+            int accountNumber;
+            std::cin >> accountNumber;
+            b.checkBalance(accountNumber);
+            break;
+        }
+        case 3:
+            std::cout << "Enter Account Number:";
+            int accountNumber;
+            std::cin >> accountNumber;
+            std::cout << "Enter amount:";
+            long amount;
+            std::cin >> amount;
+            b.depositMoney(accountNumber, amount);
+            break;
+        case 4:
+        {
+            break;
+        }
+        case 5:
+        {
+            break;
+        }
+        case 6:
+        {
+            b.showAllAccounts();
+            break;
+        }
+        case 7:
+        {
+            break;
+        }
+        }
+    } while (userInput != 7);
 
     return 0;
 }
