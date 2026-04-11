@@ -50,10 +50,21 @@ public:
     bool isValidAccountNumber(int);
     void checkBalance(long accountNumber);
     void depositMoney(int, long);
-    void withDraw();
+    long withDraw(int, long);
     void showAllAccounts();
-    void closeAccount();
+    void closeAccount(int);
 };
+
+void Bank::closeAccount(int accountNumber)
+{
+    for (const auto account : accounts)
+    {
+        if (account->getAccountNumber() == accountNumber)
+        {
+            
+        }
+    }
+}
 
 void Bank::showAllAccounts()
 {
@@ -75,6 +86,26 @@ bool Bank::isValidAccountNumber(int accountNumber)
     return false;
 }
 
+long Bank::withDraw(int accountNumber, long amount)
+{
+    for (const auto account : accounts)
+    {
+        if (account->getAccountNumber() == accountNumber)
+        {
+            if (account->getBalance() - amount > 0)
+            {
+                account->setBalance(account->getBalance() - amount);
+                return account->getBalance();
+            }
+            else
+            {
+                std::cout << "Insufficient funds" << std::endl;
+            }
+        }
+    }
+    return -1;
+}
+
 void Bank::depositMoney(int accountNumber, long amount)
 {
     for (const auto account : accounts)
@@ -94,7 +125,7 @@ void Bank::checkBalance(long acccountNumber)
     {
         if (account->getAccountNumber() == acccountNumber)
         {
-            std::cout << account->getBalance() << std::endl;
+            std::cout << "Balance:" << account->getBalance() << std::endl;
             return;
         }
     }
@@ -153,6 +184,7 @@ int main()
             break;
         }
         case 3:
+        {
             std::cout << "Enter Account Number:";
             int accountNumber;
             std::cin >> accountNumber;
@@ -161,8 +193,16 @@ int main()
             std::cin >> amount;
             b.depositMoney(accountNumber, amount);
             break;
+        }
         case 4:
         {
+            std::cout << "Enter Account Number:";
+            int accountNumber;
+            std::cin >> accountNumber;
+            std::cout << "Enter amount:";
+            long amount;
+            std::cin >> amount;
+            b.withDraw(accountNumber, amount);
             break;
         }
         case 5:
